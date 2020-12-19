@@ -1,0 +1,31 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+jobs:
+  build:
+    runs-on: windows-2019
+
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Setup MSBuild path
+        uses: microsoft/setup-msbuild@v1.0.2
+
+      # Runs a single command using the runners shell
+      - name: Build exe
+        run: msbuild BabaIsYou.sln /t:Build /p:"Configuration=Release;Platform=Any CPU"
+
+      # Runs a set of commands using the runners shell
+      - name: Upload
+        uses: actions/upload-artifact@v2.2.1
+        with:
+          path: bin/BabaLevelEditor.exe
+          name: BabaIsYouEditor-dev
